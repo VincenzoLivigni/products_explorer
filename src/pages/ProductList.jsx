@@ -1,11 +1,12 @@
 import { useContext } from "react"
 import { GlobalContext } from "../contexts/GlobalContext"
 import Card from "../components/Card"
+import Filters from "../components/Filters"
 
 export default function ProductList() {
 
     const {
-        products,
+        filteredProducts,
         loading,
         error
     } = useContext(GlobalContext)
@@ -22,10 +23,12 @@ export default function ProductList() {
         <>
             <h1>Product list</h1>
 
+            <Filters />
+
             <div className="container">
                 <div className="row g-3">
                     {
-                        products.map((p) => (
+                        filteredProducts.map((p) => (
                             <div key={p.id} className="col-lg-3 col-md-6 col-sm-12">
                                 <Card
                                     product={p}
