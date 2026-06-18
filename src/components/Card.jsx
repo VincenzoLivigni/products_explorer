@@ -1,12 +1,18 @@
+import { Link } from "react-router-dom";
+
 export default function Card({ product }) {
 
     return (
         <>
             <div className="card">
-                <img src={product.thumbnail} alt={product.title} />
+                <Link to={`/product/${product.id}`}>
+                    <img src={product.thumbnail} alt={product.title} />
+                </Link>
 
                 <div className="card-body">
-                    <h3>{product.title}</h3>
+                    <Link to={`/product/${product.id}`}>
+                        <h3>{product.title}</h3>
+                    </Link>
 
                     <p><strong>Category:</strong> {product.category}</p>
                     <p><strong>Brand:</strong> {product.brand}</p>
