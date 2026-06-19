@@ -51,10 +51,10 @@ export default function Filters() {
                         onChange={(e) => setSelectedCategory(e.target.value)}
                     >
                         <option value="Select">All</option>
-                        <option value="Beauty">Beauty</option>
-                        <option value="Fragrances">Fragrances</option>
-                        <option value="Furniture">Furniture</option>
-                        <option value="Groceries">Groceries</option>
+                        <option value="beauty">Beauty</option>
+                        <option value="fragrances">Fragrances</option>
+                        <option value="furniture">Furniture</option>
+                        <option value="groceries">Groceries</option>
                     </select>
                 </div>
 

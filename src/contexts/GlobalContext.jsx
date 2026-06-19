@@ -72,6 +72,22 @@ export function GlobalProvider({ children }) {
         setSortOrderRating("Select")
     }
 
+    // PAGINAZIONE
+    const [page, setPage] = useState(1)
+
+    const productPerPage = 12
+
+    const indexOfLastPage = page * productPerPage
+    const indexOfFirstPage = indexOfLastPage - productPerPage
+
+    const currentProducts = filteredProducts.slice(indexOfFirstPage, indexOfLastPage)
+
+    const totalPages = Math.ceil(filteredProducts.length / productPerPage)
+
+    useEffect(() => {
+        setPage(1)
+    }, [search, sortOrderTitle, selectedCategory, sortOrderPrice, sortOrderRating])
+
     return (
         <GlobalContext.Provider value={{
             products,
@@ -91,7 +107,12 @@ export function GlobalProvider({ children }) {
             setSortOrderRating,
 
             filteredProducts,
-            resetFilters
+            resetFilters,
+
+            page,
+            setPage,
+            totalPages,
+            currentProducts
         }}>
             {children}
         </GlobalContext.Provider>
