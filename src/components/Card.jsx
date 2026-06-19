@@ -1,6 +1,12 @@
+import { useContext } from "react";
 import { Link } from "react-router-dom";
+import { GlobalContext } from "../contexts/GlobalContext";
 
 export default function Card({ product }) {
+
+    const { wishlist, toggleWishlist } = useContext(GlobalContext)
+
+    const isFav = wishlist.some((p) => p.id === product.id)
 
     return (
         <>
@@ -18,6 +24,10 @@ export default function Card({ product }) {
                     <p><strong>Brand:</strong> {product.brand}</p>
                     <p><strong>Price:</strong> {product.price} €</p>
                     <p><strong>Rating:</strong> ⭐ {product.rating}</p>
+
+                    <button onClick={() => toggleWishlist(product)}>
+                        {isFav ? "❤️" : "🤍"}
+                    </button>
                 </div>
             </div>
         </>

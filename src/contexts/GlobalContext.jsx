@@ -88,6 +88,21 @@ export function GlobalProvider({ children }) {
         setPage(1)
     }, [search, sortOrderTitle, selectedCategory, sortOrderPrice, sortOrderRating])
 
+
+    // WISHLIST
+    const [wishlist, setWishlist] = useState([])
+
+    const toggleWishlist = (product) => {
+        setWishlist(prev => {
+            const isInWishlist = prev.find((p) => p.id === product.id)
+
+            if (isInWishlist) {
+                return prev.filter((p) => p.id !== product.id)
+            } else {
+                return [...prev, product]
+            }
+        })
+    }
     return (
         <GlobalContext.Provider value={{
             products,
@@ -112,7 +127,10 @@ export function GlobalProvider({ children }) {
             page,
             setPage,
             totalPages,
-            currentProducts
+            currentProducts,
+
+            wishlist,
+            toggleWishlist
         }}>
             {children}
         </GlobalContext.Provider>
