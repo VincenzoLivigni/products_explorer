@@ -1,4 +1,4 @@
-import { createContext, useEffect, useMemo, useState } from "react";
+import { createContext } from "react";
 import useProducts from "../hooks/useProducts"
 import useFilters from "../hooks/useFilters"
 import usePagination from "../hooks/usePagination"

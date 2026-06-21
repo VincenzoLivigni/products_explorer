@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react"
 import { useParams } from "react-router-dom"
+import CardDetail from "../components/CardDetail"
 
 export default function ProductDetail() {
 
@@ -52,19 +53,9 @@ export default function ProductDetail() {
             <h1>{product.title} Detail</h1>
 
             <div className="container">
-
-                <div className="card-detail-left">
-                    <img src={product.thumbnail} alt={product.title} />
-                </div>
-
-                <div className="card-detail-right">
-                    <h3>{product.title}</h3>
-
-                    <p><strong>Category:</strong> {product.category}</p>
-                    <p><strong>Brand:</strong> {product.brand}</p>
-                    <p><strong>Price:</strong> {product.price} €</p>
-                    <p><strong>Rating:</strong> ⭐ {product.rating}</p>
-                </div>
+                <CardDetail
+                    product={product}
+                />
             </div>
         </>
     )
