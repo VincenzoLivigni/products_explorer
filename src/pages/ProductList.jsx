@@ -22,9 +22,9 @@ export default function ProductList() {
 
     return (
         <>
-            <h1>Product list</h1>
-
             <Filters />
+
+            <h1>Products</h1>
 
             <Pagination />
 

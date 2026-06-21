@@ -26,7 +26,7 @@ export default function Card({ product }) {
                     <p><strong>Rating:</strong> ⭐ {product.rating}</p>
 
                     <button onClick={() => toggleWishlist(product)}>
-                        {isFav ? "❤️" : "🤍"}
+                        {isFav ? "Remove from wishlist ❤️" : "Add to wishlist 🤍"}
                     </button>
                 </div>
             </div>
