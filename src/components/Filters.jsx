@@ -1,5 +1,16 @@
-import { useContext } from "react"
+import { useContext, useMemo } from "react"
 import { GlobalContext } from "../contexts/GlobalContext"
+
+function debounce(callback, delay) {
+    let timer;
+
+    return (value) => {
+        clearTimeout(timer)
+        timer = setTimeout(() => {
+            callback(value)
+        }, delay)
+    }
+}
 
 export default function Filters() {
 
@@ -18,6 +29,10 @@ export default function Filters() {
         resetFilters
     } = useContext(GlobalContext)
 
+    const debounceSetSearch = useMemo(() =>
+        debounce(setSearch, 350)
+        , [setSearch])
+
     return (
         <>
             <div className="filters">
@@ -28,7 +43,7 @@ export default function Filters() {
                         type="text"
                         placeholder="Search products..."
                         value={search}
-                        onChange={(e) => setSearch(e.target.value)}
+                        onChange={(e) => debounceSetSearch(e.target.value)}
                     />
                 </div>
 

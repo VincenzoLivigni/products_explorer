@@ -1,4 +1,4 @@
-import { createContext, useEffect, useState } from "react";
+import { createContext, useEffect, useMemo, useState } from "react";
 
 export const GlobalContext = createContext()
 
@@ -45,24 +45,27 @@ export function GlobalProvider({ children }) {
     const [sortOrderPrice, setSortOrderPrice] = useState("Select")
     const [sortOrderRating, setSortOrderRating] = useState("Select")
 
-    const filteredProducts = [...products]
-        .filter((p) =>
-            p.title.toLowerCase().includes(search.toLowerCase()) &&
-            (selectedCategory === "Select" || p.category === selectedCategory)
-        )
+    const filteredProducts = useMemo(() => {
+        return [...products]
 
-        .sort((a, b) => {
-            if (sortOrderTitle === "A-Z") return a.title.localeCompare(b.title)
-            if (sortOrderTitle === "Z-A") return b.title.localeCompare(a.title)
+            .filter((p) =>
+                p.title.toLowerCase().includes(search.toLowerCase()) &&
+                (selectedCategory === "Select" || p.category === selectedCategory)
+            )
 
-            if (sortOrderPrice === "Increasing") return a.price - b.price
-            if (sortOrderPrice === "Decreasing") return b.price - a.price
+            .sort((a, b) => {
+                if (sortOrderTitle === "A-Z") return a.title.localeCompare(b.title)
+                if (sortOrderTitle === "Z-A") return b.title.localeCompare(a.title)
 
-            if (sortOrderRating === "Increasing") return b.rating - a.rating
-            if (sortOrderRating === "Decreasing") return a.rating - b.rating
+                if (sortOrderPrice === "Increasing") return a.price - b.price
+                if (sortOrderPrice === "Decreasing") return b.price - a.price
 
-            return 0
-        })
+                if (sortOrderRating === "Increasing") return b.rating - a.rating
+                if (sortOrderRating === "Decreasing") return a.rating - b.rating
+
+                return 0
+            })
+    }, [products, search, selectedCategory, sortOrderTitle, sortOrderPrice, sortOrderRating])
 
     function resetFilters() {
         setSearch("")
