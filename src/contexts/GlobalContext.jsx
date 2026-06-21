@@ -89,8 +89,15 @@ export function GlobalProvider({ children }) {
     }, [search, sortOrderTitle, selectedCategory, sortOrderPrice, sortOrderRating])
 
 
-    // WISHLIST
-    const [wishlist, setWishlist] = useState([])
+    // WISHLIST + LOCALSTORAGE
+    const [wishlist, setWishlist] = useState(() => {
+        const saved = localStorage.getItem("wishlist")
+        return saved ? JSON.parse(saved) : []
+    })
+
+    useEffect(() => {
+        localStorage.setItem("wishlist", JSON.stringify(wishlist))
+    }, [wishlist])
 
     const toggleWishlist = (product) => {
         setWishlist(prev => {
