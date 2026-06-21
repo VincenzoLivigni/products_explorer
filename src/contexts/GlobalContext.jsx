@@ -1,146 +1,24 @@
 import { createContext, useEffect, useMemo, useState } from "react";
+import useProducts from "../hooks/useProducts"
+import useFilters from "../hooks/useFilters"
+import usePagination from "../hooks/usePagination"
+import useWishlist from "../hooks/useWishlist"
 
 export const GlobalContext = createContext()
 
 export function GlobalProvider({ children }) {
 
-    const api = "https://dummyjson.com/products"
+    const productsLogic = useProducts()
+    const filtersLogic = useFilters(productsLogic.products)
+    const paginationLogic = usePagination(filtersLogic.filteredProducts)
+    const wishlistLogic = useWishlist()
 
-    const [products, setProducts] = useState([])
-    const [loading, setLoading] = useState(true)
-    const [error, setError] = useState(false)
-
-    // RECUPERO DATI
-    const fetchProducts = async () => {
-        try {
-            setLoading(true)
-            setError(false)
-
-            const res = await fetch(api)
-
-            if (!res.ok) {
-                throw new Error(`Error: ${res.status}`)
-            }
-
-            const data = await res.json()
-            setProducts(data.products)
-        }
-        catch (err) {
-            console.log("Error: ", err)
-            setError(true)
-        }
-        finally {
-            setLoading(false)
-        }
-    }
-
-    useEffect(() => {
-        fetchProducts()
-    }, [])
-
-    // FILTRI
-    const [search, setSearch] = useState("")
-    const [sortOrderTitle, setSortOrderTitle] = useState("Select")
-    const [selectedCategory, setSelectedCategory] = useState("Select")
-    const [sortOrderPrice, setSortOrderPrice] = useState("Select")
-    const [sortOrderRating, setSortOrderRating] = useState("Select")
-
-    const filteredProducts = useMemo(() => {
-        return [...products]
-
-            .filter((p) =>
-                p.title.toLowerCase().includes(search.toLowerCase()) &&
-                (selectedCategory === "Select" || p.category === selectedCategory)
-            )
-
-            .sort((a, b) => {
-                if (sortOrderTitle === "A-Z") return a.title.localeCompare(b.title)
-                if (sortOrderTitle === "Z-A") return b.title.localeCompare(a.title)
-
-                if (sortOrderPrice === "Increasing") return a.price - b.price
-                if (sortOrderPrice === "Decreasing") return b.price - a.price
-
-                if (sortOrderRating === "Increasing") return b.rating - a.rating
-                if (sortOrderRating === "Decreasing") return a.rating - b.rating
-
-                return 0
-            })
-    }, [products, search, selectedCategory, sortOrderTitle, sortOrderPrice, sortOrderRating])
-
-    function resetFilters() {
-        setSearch("")
-        setSortOrderTitle("Select")
-        setSelectedCategory("Select")
-        setSortOrderPrice("Select")
-        setSortOrderRating("Select")
-    }
-
-    // PAGINAZIONE
-    const [page, setPage] = useState(1)
-
-    const productPerPage = 12
-
-    const indexOfLastPage = page * productPerPage
-    const indexOfFirstPage = indexOfLastPage - productPerPage
-
-    const currentProducts = filteredProducts.slice(indexOfFirstPage, indexOfLastPage)
-
-    const totalPages = Math.ceil(filteredProducts.length / productPerPage)
-
-    useEffect(() => {
-        setPage(1)
-    }, [search, sortOrderTitle, selectedCategory, sortOrderPrice, sortOrderRating])
-
-
-    // WISHLIST + LOCALSTORAGE
-    const [wishlist, setWishlist] = useState(() => {
-        const saved = localStorage.getItem("wishlist")
-        return saved ? JSON.parse(saved) : []
-    })
-
-    useEffect(() => {
-        localStorage.setItem("wishlist", JSON.stringify(wishlist))
-    }, [wishlist])
-
-    const toggleWishlist = (product) => {
-        setWishlist(prev => {
-            const isInWishlist = prev.find((p) => p.id === product.id)
-
-            if (isInWishlist) {
-                return prev.filter((p) => p.id !== product.id)
-            } else {
-                return [...prev, product]
-            }
-        })
-    }
     return (
         <GlobalContext.Provider value={{
-            products,
-            setProducts,
-            loading,
-            error,
-
-            search,
-            setSearch,
-            sortOrderTitle,
-            setSortOrderTitle,
-            selectedCategory,
-            setSelectedCategory,
-            sortOrderPrice,
-            setSortOrderPrice,
-            sortOrderRating,
-            setSortOrderRating,
-
-            filteredProducts,
-            resetFilters,
-
-            page,
-            setPage,
-            totalPages,
-            currentProducts,
-
-            wishlist,
-            toggleWishlist
+            ...productsLogic,
+            ...filtersLogic,
+            ...paginationLogic,
+            ...wishlistLogic
         }}>
             {children}
         </GlobalContext.Provider>

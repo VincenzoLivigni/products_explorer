@@ -1,0 +1,57 @@
+import { useMemo, useState } from "react"
+
+export default function useFilters(products) {
+
+    // FILTRI
+    const [search, setSearch] = useState("")
+    const [sortOrderTitle, setSortOrderTitle] = useState("Select")
+    const [selectedCategory, setSelectedCategory] = useState("Select")
+    const [sortOrderPrice, setSortOrderPrice] = useState("Select")
+    const [sortOrderRating, setSortOrderRating] = useState("Select")
+
+    const filteredProducts = useMemo(() => {
+        return [...products]
+
+            .filter((p) =>
+                p.title.toLowerCase().includes(search.toLowerCase()) &&
+                (selectedCategory === "Select" || p.category === selectedCategory)
+            )
+
+            .sort((a, b) => {
+                if (sortOrderTitle === "A-Z") return a.title.localeCompare(b.title)
+                if (sortOrderTitle === "Z-A") return b.title.localeCompare(a.title)
+
+                if (sortOrderPrice === "Increasing") return a.price - b.price
+                if (sortOrderPrice === "Decreasing") return b.price - a.price
+
+                if (sortOrderRating === "Increasing") return b.rating - a.rating
+                if (sortOrderRating === "Decreasing") return a.rating - b.rating
+
+                return 0
+            })
+    }, [products, search, selectedCategory, sortOrderTitle, sortOrderPrice, sortOrderRating])
+
+    function resetFilters() {
+        setSearch("")
+        setSortOrderTitle("Select")
+        setSelectedCategory("Select")
+        setSortOrderPrice("Select")
+        setSortOrderRating("Select")
+    }
+
+    return {
+        search,
+        setSearch,
+        sortOrderTitle,
+        setSortOrderTitle,
+        selectedCategory,
+        setSelectedCategory,
+        sortOrderPrice,
+        setSortOrderPrice,
+        sortOrderRating,
+        setSortOrderRating,
+
+        filteredProducts,
+        resetFilters
+    }
+}
